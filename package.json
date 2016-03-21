@@ -1,0 +1,22 @@
+{
+  "name": "generator-antd",
+  "version": "0.0.1",
+  "description": "antd generator powerd by yeoman",
+  "main": "generators/app/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "analyze": "node utils/analyze.js"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "yeoman",
+    "generator",
+    "yeoman-generator"
+  ],
+  "author": "awaw00",
+  "license": "MIT",
+  "dependencies": {
+    "yeoman-generator": "^0.20.2"
+  }
+}
