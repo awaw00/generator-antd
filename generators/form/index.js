@@ -3,26 +3,26 @@ var utils = require('../../utils/form')
 module.exports = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments)
-    this.argument('baseFileName', {type: String, required: true})
+    this.argument('blueprintFileName', {type: String, required: true})
   },
-  obj: null,
+  blueprint: null,
   initializing () {
-    var baseFilePath = this.destinationPath(this.baseFileName)
-    this.obj = require(baseFilePath)
-    this.obj.items = utils.setDefault(this.obj.items)
+    var blueprintFilePath = this.destinationPath(this.blueprintFileName)
+    this.blueprint = require(blueprintFilePath)
+    this.blueprint.items = utils.setDefault(this.obj.items)
   },
   prompting () {
   },
   configuring () {
   },
   writing () {
-    var nodesAndModules = utils.getNodesAndModules(this.obj.items)
-    var initialStates = utils.getInitialState(this.obj.items)
+    var nodesAndModules = utils.getNodesAndModules(this.blueprint.items)
+    var initialStates = utils.getInitialState(this.blueprint.items)
     this.fs.copyTpl(
       this.templatePath('index.js'),
-      this.destinationPath(`src/components/${this.obj.formName}/index.js`),
+      this.destinationPath(`src/components/${this.blueprint.formName}/index.js`),
       {
-        obj: this.obj,
+        blueprint: this.blueprint,
         initialStates,
         modules: nodesAndModules.modules,
         nodes: nodesAndModules.nodes
