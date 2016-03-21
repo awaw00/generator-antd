@@ -12,17 +12,11 @@ module.exports = generators.Base.extend({
     if (this.blueprint.pagination === undefined) this.blueprint.pagination = false
     if (this.blueprint.size === undefined) this.blueprint.size = ''
   },
-  prompting () {
-  },
-  configuring () {
-  },
   writing () {
     this.fs.copyTpl(
       this.templatePath('index.js'),
       this.destinationPath(`src/components/${this.blueprint.tableName}/index.js`),
       this.blueprint
     )
-  },
-  conflicts () {
   }
 })

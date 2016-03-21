@@ -11,10 +11,6 @@ module.exports = generators.Base.extend({
     this.blueprint = require(blueprintFilePath)
     this.blueprint.items = utils.setDefault(this.obj.items)
   },
-  prompting () {
-  },
-  configuring () {
-  },
   writing () {
     var nodesAndModules = utils.getNodesAndModules(this.blueprint.items)
     var initialStates = utils.getInitialState(this.blueprint.items)
@@ -28,7 +24,5 @@ module.exports = generators.Base.extend({
         nodes: nodesAndModules.nodes
       }
     )
-  },
-  conflicts () {
   }
 })

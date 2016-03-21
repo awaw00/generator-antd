@@ -13,42 +13,45 @@ module.exports = generators.Base.extend({
     this.prompt([{
       type: 'input',
       name: 'projectName',
-      message: 'your project name',
+      message: 'your project name:',
       default: this.appname,
       store: true
     }, {
-      type: 'confirm',
-      name: 'useAntd',
-      message: 'use Ant.design',
-      default: true,
+      type: 'input',
+      name: 'author',
+      message: 'author:',
+      default: '',
+      store: true
+    }, {
+      type: 'input',
+      name: 'gitRepo',
+      message: 'git repository:',
+      default: '',
       store: true
     }], (answers) => {
-      this.config.set('name', answers.projectName)
-      this.config.set('useAntd', answers.useAntd)
+      this.config.set('projectName', answers.projectName)
+      this.config.set('author', answers.author)
+      this.config.set('gitRepo', answers.gitRepo)
       this.config.save()
       done()
     })
   },
   writing () {
-    this.bulkDirectory('.', '.')
+    this.log('')
+    this.directory('appTemplate', '.')
+    this.template('package.json', 'package.json', {
+      projectName: this.config.get('projectName'),
+      author: this.config.get('author'),
+      gitRepo: this.config.get('gitRepo')
+    })
   },
   install () {
     this.log('')
     this.log('install dependencies...')
     this.log('')
     this.runInstall('npm', '', {}, () => {
-      if (this.config.get('useAntd')) {
-        this.log('')
-        this.log('install antd...')
-        this.log('')
-        this.npmInstall(['antd'], {save: true}, () => {
-          this.log('')
-          this.log('all done!')
-        })
-      } else {
-        this.log('')
-        this.log('all done!')
-      }
+      this.log('')
+      this.log('all done!')
     })
   }
 })
