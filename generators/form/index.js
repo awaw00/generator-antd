@@ -22,7 +22,7 @@ module.exports = generators.Base.extend({
         initialStates,
         modules: nodesAndModules.modules,
         nodes: nodesAndModules.nodes,
-        jsonToStr: require('../../utils').jsonToStr
+        stringify: require('../../utils').jsonToStr
       }
     )
   }

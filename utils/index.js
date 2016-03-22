@@ -1,13 +1,21 @@
+var stringify = require('json-stringify-pretty-compact')
 module.exports = {
   jsonToStr (obj) {
-    return JSON.stringify(obj).replace(/\"/g, '\'').replace(/,/g, ', ').replace(/:/g, ': ')
+    return JSON.stringify(obj)
+          .replace(/\"/g, '\'')
+          .replace(/,/g, ', ')
+          .replace(/:/g, ': ')
+          .replace('\'true\'', 'true')
+          .replace('\'false\'', 'false')
   },
-  strToJson (str) {
-    var obj = JSON.parse(str)
-    for (var key in obj) {
-      if (obj[key] === 'true') obj[key] = true
-      else if (obj[key] === 'false') obj[key] = false
-    }
-    return obj
+  stringify (obj) {
+    return stringify(obj, {
+      maxLength: 10,
+      indent: 2
+    })
+    .replace(/\"/g, '\'')
+    .replace(/,/g, ', ')
+    .replace(/'\'true\''/g, 'true')
+    .replace(/'\'false\''/g, 'false')
   }
 }

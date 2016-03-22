@@ -50,7 +50,7 @@ const <%- blueprint.formName %> = React.createClass({
           <%_ for (var key in item.options) { _%>
             <%_ reverseMap[item.options[key]] = key _%>
           <%_ } _%>
-      let <%- item.fieldName %>ReverseMap = <%- jsonToStr(reverseMap).replace('\'true\'', 'true').replace('\'false\'', 'false') %>
+      let <%- item.fieldName %>ReverseMap = <%- stringify(reverseMap) %>
       newState['<%- item.fieldName %>'] = <%- item.fieldName %>ReverseMap[newState['<%- item.fieldName %>']]
         <%_ } _%>
       <%_ } _%>
@@ -59,18 +59,23 @@ const <%- blueprint.formName %> = React.createClass({
   },
   onOk () {
     const {okHandler, form} = this.props
-    const {getFieldsValue} = form
-    let values = getFieldsValue()
-    <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
-      <%_ item = blueprint.items[i] _%>
-      <%_ if (typeof item.options === 'object') { _%>
-    const <%- item.fieldName %>Map = <%- jsonToStr(item.options) %>
-    values['<%- item.fieldName %>'] = <%- item.fieldName %>Map[values['<%- item.fieldName %>']]
+    const {validateFields, getFieldsValue} = form
+    validateFields((errors, values) => {
+      if (errors) {
+        return
+      }
+      if (!okHandler) {
+        return
+      }
+      <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
+        <%_ item = blueprint.items[i] _%>
+        <%_ if (typeof item.options === 'object') { _%>
+      const <%- item.fieldName %>Map = <%- stringify(item.options) %>
+      values['<%- item.fieldName %>'] = <%- item.fieldName %>Map[values['<%- item.fieldName %>']]
+        <%_ } _%>
       <%_ } _%>
-    <%_ } _%>
-    if (okHandler) {
       okHandler(values)
-    }
+    })
   },
   render () {
     const {visible, cancelHandler, editMode, confirmLoading} = this.props
@@ -82,16 +87,19 @@ const <%- blueprint.formName %> = React.createClass({
 
     const {getFieldProps} = this.props.form
     <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
-    <%_ name = blueprint.items[i].fieldName _%>
-      <%_ if (blueprint.items[i].type === 'checkbox') { _%>
-    const <%- name %>Props = getFieldProps('<%- name %>', {valuePropName: 'checked'})
+    <%_ item = blueprint.items[i] _%>
+    <%_ name = item.fieldName _%>
+      <%_ if (item.type === 'checkbox') { _%>
+    const <%- name %>Props = getFieldProps('<%- name %>',
+      {valuePropName: 'checked'<%- item.rules ? ', rules: ' + stringify(item.rules) : '' %>}
+    )
       <%_ } else { _%>
-    const <%- name %>Props = getFieldProps('<%- name %>')
+    const <%- name %>Props = getFieldProps('<%- name %>'<%- item.rules ? ', {rules: ' + stringify(item.rules) + '}' : '' %>)
       <%_ } _%>
     <%_ } _%>
     return (
       <Modal confirmLoading={confirmLoading} title={title} visible={visible} onCancel={cancelHandler} onOk={this.onOk}>
-        <Form horizontal>
+        <Form horizontal form={this.props.form}>
           <%_ for (var i = 0; i < nodes.length; i++) { _%>
           <Form.Item label='<%- blueprint.items[i].label %>' {...formLayout}>
             <%- nodes[i] %>
