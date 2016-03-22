@@ -10,8 +10,10 @@ module.exports = generators.Base.extend({
   initializing () {
     this.blueprint = require(this.destinationPath(this.blueprintFileName))
     this.blueprint.pluraName = Inflector.pluralize(this.blueprint.moduleName)
-    this.blueprint.camelModuleName = Inflector.camelize(this.blueprint.moduleName)
-    this.blueprint.camelPluraName = Inflector.camelize(this.blueprint.pluraName)
+    if (!this.blueprint.urlGet) this.blueprint.urlGet = this.blueprint.moduleName
+    if (!this.blueprint.urlAdd) this.blueprint.urlAdd = this.blueprint.moduleName
+    if (!this.blueprint.urlUpdate) this.blueprint.urlUpdate = this.blueprint.moduleName
+    if (!this.blueprint.urlDel) this.blueprint.urlDel = this.blueprint.moduleName
   },
   writing () {
     var distFolder = this.distFolder || 'src/redux/modules/'

@@ -1,4 +1,10 @@
-export default function createReducer (initialState, actionTypes, actionHandlers) {
+export function createActionTypes (types) {
+  return types.reduce((actionTypes, type) => {
+    actionTypes[type] = type
+    return actionTypes
+  }, {})
+}
+export function createReducer (initialState, actionTypes, actionHandlers) {
   return (state = initialState, action) => {
     if (actionTypes[action.type]) {
       const handler = actionHandlers[action.type]
@@ -14,3 +20,5 @@ export default function createReducer (initialState, actionTypes, actionHandlers
     }
   }
 }
+
+export requester from './requester'
