@@ -74,7 +74,6 @@ const <%- blueprint.formName %> = React.createClass({
   },
   render () {
     const {visible, cancelHandler, editMode, confirmLoading} = this.props
-    const {<%- statesStr %>} = this.state
     const title = editMode === 'new' ? '<%- blueprint.newTitle %>' : '<%- blueprint.editTitle %>'
     const formLayout = {
       labelCol: {span: <%- blueprint.labelCol ? blueprint.labelCol : 4 %>},
@@ -94,7 +93,7 @@ const <%- blueprint.formName %> = React.createClass({
       <Modal confirmLoading={confirmLoading} title={title} visible={visible} onCancel={cancelHandler} onOk={this.onOk}>
         <Form horizontal>
           <%_ for (var i = 0; i < nodes.length; i++) { _%>
-          <Form.Item label='<%- blueprint.items[i].label %>：' {...formLayout}>
+          <Form.Item label='<%- blueprint.items[i].label %>' {...formLayout}>
             <%- nodes[i] %>
           </Form.Item>
           <%_ } _%>

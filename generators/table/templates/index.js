@@ -35,7 +35,7 @@ const <%- tableName %> = React.createClass({
   componentWillMount () {
     this.columns = [
       <%_ for(var i = 0; i < cols.length; i++) { _%>
-      {title: '<%- cols[i].title %>', dataIndex: '<%- cols[i].dataIndex %>'}<%- (i === cols.length - 1 && methods.length === 0 ? '' : ',') %>
+      {title: '<%- cols[i].title %>', <%- cols[i].renderAs ? ('render: (t, r) => <span>{' + cols[i].renderAs + '}</span>') : (`dataIndex: '${cols[i].dataIndex}'`) %>}<%- (i === cols.length - 1 && methods.length === 0 ? '' : ',') %>
       <%_ } _%>
       <%_ if (methods.length > 0) { _%>
       {title: '操作', render: (t, r) => {
@@ -63,13 +63,21 @@ const <%- tableName %> = React.createClass({
     <%_ if (pagination) { _%>
     const {pageChangeHandler, pageSize, currentPage} = this.props
     const pagination = {
-      size: pageSize,
-      current: pageSize,
-      defaultCurrent: pageSize
+      pageSize,
+      current: currentPage,
+      defaultCurrent: 1,
+      onChange: pageChangeHandler
+    }
+    <%_ } else { _%>
+    const pagination = {
+      pageSize: 20,
+      current: 1,
+      defaultCurrent: 1,
+      showSizeChanger: true
     }
     <%_ } _%>
     return (
-      <Table<%- size ? ' size=\'' + size + '\' ' : ' ' %>loading={loading}<%- pagination ? 'pagination={pagination} ' : ' ' %>columns={this.columns} dataSource={dataSource} rowKey={(i) => i.<%- keyIndex %>} />
+      <Table<%- size ? ' size=\'' + size + '\' ' : ' ' %>loading={loading} pagination={pagination} columns={this.columns} dataSource={dataSource} rowKey={(i) => i.<%- keyName %>} />
     )
   }
 })
