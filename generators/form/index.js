@@ -9,7 +9,7 @@ module.exports = generators.Base.extend({
   initializing () {
     var blueprintFilePath = this.destinationPath(this.blueprintFileName)
     this.blueprint = require(blueprintFilePath)
-    this.blueprint.items = utils.setDefault(this.obj.items)
+    this.blueprint.items = utils.setDefault(this.blueprint.items)
   },
   writing () {
     var nodesAndModules = utils.getNodesAndModules(this.blueprint.items)
@@ -21,7 +21,8 @@ module.exports = generators.Base.extend({
         blueprint: this.blueprint,
         initialStates,
         modules: nodesAndModules.modules,
-        nodes: nodesAndModules.nodes
+        nodes: nodesAndModules.nodes,
+        jsonToStr: require('../../utils').jsonToStr
       }
     )
   }

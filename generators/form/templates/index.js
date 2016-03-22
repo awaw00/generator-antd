@@ -42,14 +42,38 @@ const <%- blueprint.formName %> = React.createClass({
       nextProps.form.resetFields()
       nextProps.form.setFieldsValue(this.initialState)
     } else {
-      nextProps.form.setFieldsValue(editTarget)
+      let newState = Object.assign({}, editTarget)
+      <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
+        <%_ item = blueprint.items[i] _%>
+        <%_ if (typeof item.options === 'object') { _%>
+          <%_ reverseMap = {} _%>
+          <%_ for (var key in item.options) { _%>
+            <%_ reverseMap[item.options[key]] = key _%>
+          <%_ } _%>
+      let <%- item.fieldName %>ReverseMap = JSON.parse('<%- JSON.stringify(reverseMap) %>')
+      for (const key in <%- item.fieldName %>ReverseMap) {
+        if (<%- item.fieldName %>ReverseMap[key] === 'true') <%- item.fieldName %>ReverseMap[key] = true
+        else if (<%- item.fieldName %>ReverseMap[key] === 'false') <%- item.fieldName %>ReverseMap[key] = false
+      }
+      newState['<%- item.fieldName %>'] = <%- item.fieldName %>ReverseMap[newState['<%- item.fieldName %>']]
+        <%_ } _%>
+      <%_ } _%>
+      nextProps.form.setFieldsValue(newState)
     }
   },
   onOk () {
     const {okHandler, form} = this.props
     const {getFieldsValue} = form
+    let values = getFieldsValue()
+    <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
+      <%_ item = blueprint.items[i] _%>
+      <%_ if (typeof item.options === 'object') { _%>
+    const <%- item.fieldName %>Map = <%- jsonToStr(item.options) %>
+    values['<%- item.fieldName %>'] = <%- item.fieldName %>Map[values['<%- item.fieldName %>']]
+      <%_ } _%>
+    <%_ } _%>
     if (okHandler) {
-      okHandler(getFieldsValue())
+      okHandler(values)
     }
   },
   render () {
