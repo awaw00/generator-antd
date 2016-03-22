@@ -50,11 +50,7 @@ const <%- blueprint.formName %> = React.createClass({
           <%_ for (var key in item.options) { _%>
             <%_ reverseMap[item.options[key]] = key _%>
           <%_ } _%>
-      let <%- item.fieldName %>ReverseMap = JSON.parse('<%- JSON.stringify(reverseMap) %>')
-      for (const key in <%- item.fieldName %>ReverseMap) {
-        if (<%- item.fieldName %>ReverseMap[key] === 'true') <%- item.fieldName %>ReverseMap[key] = true
-        else if (<%- item.fieldName %>ReverseMap[key] === 'false') <%- item.fieldName %>ReverseMap[key] = false
-      }
+      let <%- item.fieldName %>ReverseMap = <%- jsonToStr(reverseMap).replace('\'true\'', 'true').replace('\'false\'', 'false') %>
       newState['<%- item.fieldName %>'] = <%- item.fieldName %>ReverseMap[newState['<%- item.fieldName %>']]
         <%_ } _%>
       <%_ } _%>
