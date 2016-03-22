@@ -35,7 +35,7 @@ export function <%- pluraName %>RequestFailure (error) {
   return {
     type: actionTypes.<%- PLURANAME %>_REQUEST_FAILURE,
     payload: {
-      loading: false,
+      requesting: false,
       error
     }
   }
@@ -58,7 +58,7 @@ export function endRequest (type, <%- pluraName %>) {
     }
   }
 }
-export function startEdit<%- moduleName %> (editTarget) {
+export function startEdit<%- camelModuleName %> (editTarget) {
   let editMode = 'edit'
   if (!editTarget) {
     editTarget = null
@@ -84,7 +84,7 @@ export function endEdit<%- camelModuleName %> () {
 export function get<%- camelPluraName %> (success, error) {
   return (dispatch) => {
     dispatch(startRequest(actionTypes.START_FETCH_<%- PLURANAME %>))
-    return requester.get(apiUrl)
+    return requester.get(`${apiUrl}/<%- moduleName %>`)
           .then((res) => {
             dispatch(endRequest(actionTypes.END_FETCH_<%- PLURANAME %>, res.Data))
             if (success) success(res)
@@ -98,7 +98,7 @@ export function get<%- camelPluraName %> (success, error) {
 export function get<%- camelModuleName %>Item (key, success, error) {
   return (dispatch, getState) => {
     dispatch(startRequest(actionTypes.START_FETCH_<%- MODULENAME %>_ITEM))
-    return requester.get(`${apiUrl}/${key}`)
+    return requester.get(`${apiUrl}/<%- moduleName %>/${key}`)
           .then((res) => {
             const {<%- pluraName %>} = getState().<%- moduleName %>
             dispatch(endRequest(actionTypes.END_FETCH_<%- MODULENAME %>_ITEM,
@@ -121,7 +121,7 @@ export function get<%- camelModuleName %>Item (key, success, error) {
 export function add<%- camelModuleName %> (<%- moduleName %>, success, error) {
   return (dispatch, getState) => {
     dispatch(startRequest(actionTypes.START_ADD_<%- MODULENAME %>))
-    return requester.post(apiUrl, <%- moduleName %>)
+    return requester.post(`${apiUrl}/<%- moduleName %>`, <%- moduleName %>)
           .then((res) => {
             const {<%- pluraName %>} = getState().<%- moduleName %>
             dispatch(endRequest(actionTypes.END_ADD_<%- MODULENAME %>, [res.Data, ...<%- pluraName %>]))
@@ -136,15 +136,15 @@ export function add<%- camelModuleName %> (<%- moduleName %>, success, error) {
 export function update<%- camelModuleName %> (key, <%- moduleName %>, success, error) {
   return (dispatch, getState) => {
     dispatch(startRequest(actionTypes.START_UPDATE_<%- MODULENAME %>))
-    return requester.put(`${apiUrl}/${key}`, <%- moduleName %>)
+    return requester.put(`${apiUrl}/<%- moduleName %>/${key}`, <%- moduleName %>)
           .then((res) => {
             const {<%- pluraName %>} = getState().<%- moduleName %>
             dispatch(endRequest(actionTypes.END_UPDATE_<%- MODULENAME %>,
               <%- pluraName %>.map((i) => {
                 if (i.<%- keyName %> === key) {
-                  return r.Data
+                  return res.Data
                 } else {
-                  return r
+                  return i
                 }
               })
             ))
@@ -159,7 +159,7 @@ export function update<%- camelModuleName %> (key, <%- moduleName %>, success, e
 export function del<%- camelModuleName %> (key, success, error) {
   return (dispatch, getState) => {
     dispatch(startRequest(actionTypes.START_DEL_<%- MODULENAME %>))
-    return requester.delete(`${apiUrl}/${key}`)
+    return requester.delete(`${apiUrl}/<%- moduleName %>/${key}`)
           .then((res) => {
             const {<%- pluraName %>} = getState().<%- moduleName %>
             dispatch(endRequest(actionTypes.END_DEL_<%- MODULENAME %>,
@@ -196,9 +196,10 @@ const ACTION_HANDLERS = {
 
 const initialState = {
   requesting: false,
-  <%- pluraName %>,
+  <%- pluraName %>: [],
   editMode: 'new',
   editTarget: null,
+  editing: false,
   error: null
 }
 

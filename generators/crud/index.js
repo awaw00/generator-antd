@@ -4,7 +4,7 @@ module.exports = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments)
     this.argument('blueprintFileName', {required: true, type: String})
-    this.argument('distFolder', {type: String, default: 'src/redux/modules/'})
+    this.argument('distFolder', {type: String, required: false})
   },
   blueprint: null,
   initializing () {
@@ -14,9 +14,10 @@ module.exports = generators.Base.extend({
     this.blueprint.camelPluraName = Inflector.camelize(this.blueprint.pluraName)
   },
   writing () {
+    var distFolder = this.distFolder || 'src/redux/modules/'
     this.fs.copyTpl(
       this.templatePath('index.js'),
-      this.distFolder + this.blueprint.moduleName + '.js',
+      distFolder + this.blueprint.moduleName + '.js',
       this.blueprint
     )
   }
