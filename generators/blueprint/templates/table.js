@@ -1,5 +1,6 @@
 module.exports = {
   tableName: 'Table<%- classifyName %>',
+  keyName: '<%- classifyName %>ID',
   size: 'small',
   pagination: false,
   cols: [

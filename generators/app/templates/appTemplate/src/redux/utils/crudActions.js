@@ -1,6 +1,5 @@
 import requester from './requester'
 function requestFailure (actionTypes, error) {
-  console.error(error)
   return {
     type: actionTypes.requestFailure,
     payload: {
@@ -34,6 +33,39 @@ export function getList (module, url, success, error) {
           .then((res) => {
             dispatch(endFetchList(module.types, res.Data))
             if (success) success(res.Data)
+          })
+          .catch((err) => {
+            dispatch(requestFailure(module.types, err))
+            if (error) error(err)
+          })
+  }
+}
+function startFetchListOfPage (actionTypes) {
+  return {
+    type: actionTypes.startFetchListOfPage,
+    payload: {
+      requesting: true,
+      error: null
+    }
+  }
+}
+function endFetchListOfPage (actionTypes, newList, total) {
+  return {
+    type: actionTypes.endFetchListOfPage,
+    payload: {
+      requesting: false,
+      list: newList,
+      total
+    }
+  }
+}
+export function getListOfPage (module, url, success, error) {
+  return (dispatch) => {
+    dispatch(startFetchListOfPage(module.types))
+    return requester.get(url)
+          .then((res) => {
+            dispatch(endFetchListOfPage(module.types, res.Data, res.Total))
+            if (success) success(res.Data, res.Total)
           })
           .catch((err) => {
             dispatch(requestFailure(module.types, err))
@@ -206,6 +238,7 @@ export function delItem (module, url, key, success, error) {
 export default {
   getItem,
   getList,
+  getListOfPage,
   startEditItem,
   endEditItem,
   addItem,

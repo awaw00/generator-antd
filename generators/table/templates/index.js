@@ -10,6 +10,7 @@ const <%- tableName %> = React.createClass({
     dataSource: PropTypes.array.isRequired,
     loading: PropTypes.bool<%- methods.length > 0 || pagination ? ',' : '' %>
     <%_ if (pagination) { _%>
+    total: PropTypes.number.isRequired,
     pageSize: PropTypes.number.isRequired,
     currentPage: PropTypes.number.isRequired,
     pageChangeHandler: PropTypes.func.isRequired<%- methods.length > 0 ? ',' : '' %>
@@ -61,8 +62,9 @@ const <%- tableName %> = React.createClass({
   render () {
     const {dataSource, loading} = this.props
     <%_ if (pagination) { _%>
-    const {pageChangeHandler, pageSize, currentPage} = this.props
+    const {total, pageChangeHandler, pageSize, currentPage} = this.props
     const pagination = {
+      total,
       pageSize,
       current: currentPage,
       defaultCurrent: 1,

@@ -1,7 +1,9 @@
 module.exports = {
   moduleName: '<%- name %>',
   keyName: 'keyName',
-  urlGet: 'owner/${owner}/<%- name %>/${key}',
+  pagination: true,
+  urlGetItem: 'owner/${owner}/<%- name %>/${key}',
+  urlGetList: 'owner/${owner}/<%- name %>/${count}/${page}',
   urlAdd: 'owner/${owner}/<%- name %>',
   urlUpdate: 'owner/${owner}/<%- name %>/${key}',
   urlDel: 'owner/${owner}/<%- name %>/${key}'

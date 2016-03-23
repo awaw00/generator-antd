@@ -1,5 +1,4 @@
 var generators = require('yeoman-generator')
-var utils = require('../../utils')
 module.exports = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments)

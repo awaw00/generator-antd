@@ -1,3 +1,4 @@
+// TODO: 分页获取
 var Inflector = require('inflected')
 var generators = require('yeoman-generator')
 module.exports = generators.Base.extend({
@@ -8,20 +9,25 @@ module.exports = generators.Base.extend({
   },
   blueprint: null,
   initializing () {
+    var base = {
+      moduleName: 'moduleName',
+      keyName: 'keyName',
+      pagination: false,
+      urlGetItem: 'moduleName/${key}',
+      urlGetList: 'moduleName',
+      urlAdd: 'moduleName',
+      urlUpdate: 'moduleName/${key}',
+      urlDel: 'moduleName/${key}'
+    }
     this.blueprint = require(this.destinationPath(this.blueprintFileName))
     this.blueprint.pluraName = Inflector.pluralize(this.blueprint.moduleName)
-    if (!this.blueprint.urlGet) this.blueprint.urlGet = this.blueprint.moduleName
-    if (!this.blueprint.urlGetItem) this.blueprint.urlGetItem = this.blueprint.urlGet
-    if (!this.blueprint.urlGetList) this.blueprint.urlGetList = this.blueprint.urlGet
-    if (!this.blueprint.urlAdd) this.blueprint.urlAdd = this.blueprint.moduleName
-    if (!this.blueprint.urlUpdate) this.blueprint.urlUpdate = this.blueprint.moduleName
-    if (!this.blueprint.urlDel) this.blueprint.urlDel = this.blueprint.moduleName
     this.blueprint.hasOwner = (url) => {
       return /\$\{owner\}/i.test(url)
     }
     this.blueprint.hasKey = (url) => {
       return /\$\{key\}/i.test(url)
     }
+    this.blueprint = Object.assign(base, this.blueprint)
   },
   writing () {
     var distFolder = this.distFolder || 'src/redux/modules/'

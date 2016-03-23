@@ -1,4 +1,5 @@
 import {apiUrl} from 'constants'
+import {createActionTypes} from 'redux/utils'
 import createReducer from 'redux/utils/createReducer'
 import crudActions from 'redux/utils/crudActions'
 
@@ -6,8 +7,13 @@ import crudActions from 'redux/utils/crudActions'
 <%_ MODULENAME = moduleName.toUpperCase() _%>
 export const actionTypes = {
   requestFailure: '<%- PLURANAME %>_REQUEST_FAILURE',
+  <%_ if (pagination) { _%>
+  startFetchListOfPage: 'START_FETCH_<%- PLURANAME %>_OF_PAGE',
+  endFetchListOfPage: 'END_FETCH_<%- PLURANAME %>_OF_PAGE',
+  <%_ } else { _%>
   startFetchList: 'START_FETCH_<%- PLURANAME %>',
   endFetchList: 'END_FETCH_<%- PLURANAME %>',
+  <%_ } _%>
   startFetchItem: 'START_FETCH_<%- MODULENAME %>_ITEM',
   endFetchItem: 'END_FETCH_<%- MODULENAME %>_ITEM',
   startEditItem: 'START_EDIT_<%- MODULENAME %>',
@@ -29,8 +35,8 @@ const moduleDef = {
 function getItem (<%- hasOwner(urlGetItem) ? 'owner, ' : '' %>key, success, error) {
   return crudActions.getItem(moduleDef, `${apiUrl}/<%- urlGetItem %><%- hasKey(urlGetItem) ? '' : '/${key}' %>`, success, error)
 }
-function getList (<%- hasOwner(urlGetList) ? 'owner, ' : '' %>success, error) {
-  return crudActions.getList(moduleDef, `${apiUrl}/<%- urlGetList %>`, success, error)
+function getList (<%- hasOwner(urlGetList) ? 'owner, ' : '' %><%- pagination ? 'page, count, ' : '' %>success, error) {
+  return crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- urlGetList %>`, success, error)
 }
 function startEditItem (item) {
   return crudActions.startEditItem(moduleDef.types, item)
@@ -42,11 +48,9 @@ function addItem (<%- hasOwner(urlAdd) ? 'owner, ' : '' %>item, success, error) 
   return crudActions.addItem(moduleDef, `${apiUrl}/<%- urlAdd %>`, item, success, error)
 }
 function updateItem (<%- hasOwner(urlUpdate) ? 'owner, ' : '' %>key, item, success, error) {
-  const key = item[moduleDef.itemKey]
   return crudActions.updateItem(moduleDef, `${apiUrl}/<%- urlUpdate %><%- hasKey(urlUpdate) ? '' : '/${key}' %>`, key, item, success, error)
 }
 function delItem (<%- hasOwner(urlDel) ? 'owner, ' : '' %>key, success, error) {
-  const key = item[moduleDef.itemKey]
   return crudActions.delItem(moduleDef, `${apiUrl}/<%- urlDel %><%- hasKey(urlDel) ? '' : '/${key}' %>`, key, success, error)
 }
 export const actionCreators = {
@@ -65,10 +69,13 @@ const ACTION_HANDLERS = {
 const initialState = {
   requesting: false,
   list: [],
+  <%_ if (pagination) { _%>
+  total: 0,
+  <%_ } _%>
   editMode: 'new',
   editTarget: null,
   editing: false,
   error: null
 }
 
-export default createReducer(initialState, actionTypes, ACTION_HANDLERS)
+export default createReducer(initialState, createActionTypes(actionTypes), ACTION_HANDLERS)
