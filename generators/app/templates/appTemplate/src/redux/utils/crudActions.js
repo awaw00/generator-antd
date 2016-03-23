@@ -1,9 +1,10 @@
 import requester from './requester'
 function requestFailure (actionTypes, error) {
+  console.error(error)
   return {
-    type: actionTypes.requestFailure
+    type: actionTypes.requestFailure,
     payload: {
-      requesting: false
+      requesting: false,
       error
     }
   }
@@ -73,12 +74,14 @@ export function getItem (module, url, success, error) {
 }
 export function startEditItem (module, item) {
   if (!item) item = null
+  const editMode = item ? 'edit' : 'new'
   return {
     type: module.types.startEditItem,
     payload: {
       editing: true,
       editTarget: item,
-      error: null
+      error: null,
+      editMode
     }
   }
 }
@@ -103,7 +106,7 @@ function startAddItem (actionTypes) {
 function endAddItem (actionTypes, newList) {
   return {
     type: actionTypes.endAddItem,
-    playload: {
+    payload: {
       list: newList,
       requesting: false
     }
@@ -116,6 +119,7 @@ export function addItem (module, url, item, success, error) {
           .then((res) => {
             const {list} = getState()[module.name]
             dispatch(endAddItem(module.types, [res.Data, ...list]))
+            dispatch(endEditItem(module))
             if (success) success(res.Data)
           })
           .catch((err) => {
@@ -142,19 +146,20 @@ function endUpdateItem (actionTypes, newList) {
     }
   }
 }
-export function updateItem (module, url, item, success, error) {
+export function updateItem (module, url, key, item, success, error) {
   return (dispatch, getState) => {
     dispatch(startUpdateItem(module.types))
     return requester.put(url, item)
           .then((res) => {
             const {list} = getState()[module.name]
             dispatch(endUpdateItem(module.types, list.map((i) => {
-              if (i[module.itemKey] === item[module.itemKey]) {
+              if (i[module.itemKey] === key) {
                 return res.Data
               } else {
                 return i
               }
             })))
+            dispatch(endEditItem(module))
             if (success) success(res.Data)
           })
           .catch((err) => {
@@ -181,14 +186,14 @@ function endDelItem (actionTypes, newList) {
     }
   }
 }
-export function delItem (module, url, item, success, error) {
+export function delItem (module, url, key, success, error) {
   return (dispatch, getState) => {
     dispatch(startDelItem(module.types))
     return requester.del(url)
           .then((res) => {
             const {list} = getState()[module.name]
             dispatch(endDelItem(module.types,
-              list.filter((i) => i[module.itemKey] !== item[module.itemKey])))
+              list.filter((i) => i[module.itemKey] !== key)))
             if (success) success(res.Data)
           })
           .catch((err) => {
@@ -196,4 +201,14 @@ export function delItem (module, url, item, success, error) {
             if (error) error(err)
           })
   }
+}
+
+export default {
+  getItem,
+  getList,
+  startEditItem,
+  endEditItem,
+  addItem,
+  updateItem,
+  delItem
 }

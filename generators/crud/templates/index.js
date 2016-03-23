@@ -1,7 +1,6 @@
 import {apiUrl} from 'constants'
-import {push} from 'react-router-redux'
-import crudActions from 'redux/utils/crudActions'
 import createReducer from 'redux/utils/createReducer'
+import crudActions from 'redux/utils/crudActions'
 
 <%_ PLURANAME = pluraName.toUpperCase() _%>
 <%_ MODULENAME = moduleName.toUpperCase() _%>
@@ -22,16 +21,16 @@ export const actionTypes = {
 }
 
 const moduleDef = {
-  name: <%- moduleName %>,
-  itemKey: <%- keyName %>,
+  name: '<%- moduleName %>',
+  itemKey: '<%- keyName %>',
   types: actionTypes
 }
 
-function getItem (key, success, error) {
-  return crudActions.getItem(moduleDef, `${apiUrl}/<%- urlGetItem ? urlGetItem : urlGet %>/${key}`, success, error)
+function getItem (<%- hasOwner(urlGetItem) ? 'owner, ' : '' %>key, success, error) {
+  return crudActions.getItem(moduleDef, `${apiUrl}/<%- urlGetItem %><%- hasKey(urlGetItem) ? '' : '/${key}' %>`, success, error)
 }
-function getList (success, error) {
-  return crudActions.getList(moduleDef, `${apiUrl}/<%- urlGetList ? urlGetList : urlGet %>`, success, error)
+function getList (<%- hasOwner(urlGetList) ? 'owner, ' : '' %>success, error) {
+  return crudActions.getList(moduleDef, `${apiUrl}/<%- urlGetList %>`, success, error)
 }
 function startEditItem (item) {
   return crudActions.startEditItem(moduleDef.types, item)
@@ -39,14 +38,16 @@ function startEditItem (item) {
 function endEditItem () {
   return crudActions.endEditItem(moduleDef.types)
 }
-function addItem (item, success, error) {
+function addItem (<%- hasOwner(urlAdd) ? 'owner, ' : '' %>item, success, error) {
   return crudActions.addItem(moduleDef, `${apiUrl}/<%- urlAdd %>`, item, success, error)
 }
-function updateItem (item, success, error) {
-  return crudActions.updateItem(moduleDef, `${apiUrl}/<%- urlUpdate %>/${item[moduleDef.itemKey]}`, item, success, error)
+function updateItem (<%- hasOwner(urlUpdate) ? 'owner, ' : '' %>key, item, success, error) {
+  const key = item[moduleDef.itemKey]
+  return crudActions.updateItem(moduleDef, `${apiUrl}/<%- urlUpdate %><%- hasKey(urlUpdate) ? '' : '/${key}' %>`, key, item, success, error)
 }
-function delItem (item, success, error) {
-  return crudActions.delItem(moduleDef, `${apiUrl}/<% -urlDel %>/${item[moduleDef.itemKey]}`, success, error)
+function delItem (<%- hasOwner(urlDel) ? 'owner, ' : '' %>key, success, error) {
+  const key = item[moduleDef.itemKey]
+  return crudActions.delItem(moduleDef, `${apiUrl}/<%- urlDel %><%- hasKey(urlDel) ? '' : '/${key}' %>`, key, success, error)
 }
 export const actionCreators = {
   getItem,
@@ -64,6 +65,7 @@ const ACTION_HANDLERS = {
 const initialState = {
   requesting: false,
   list: [],
+  editMode: 'new',
   editTarget: null,
   editing: false,
   error: null

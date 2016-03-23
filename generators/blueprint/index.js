@@ -30,6 +30,7 @@ module.exports = generators.Base.extend({
     this.log('')
     var type = this.config.get('type')
     var name = this.config.get('name')
+    var fileName = Inflector.underscore(name)
     var option = {
       name,
       classifyName: Inflector.classify(name),
@@ -37,13 +38,13 @@ module.exports = generators.Base.extend({
     }
     var all = type === 'all'
     if (type === 'form' || all) {
-      this.template('form.js', `src/blueprint/form_${name}.js`, option)
+      this.template('form.js', `src/blueprints/form_${fileName}.js`, option)
     }
     if (type === 'table' || all) {
-      this.template('table.js', `src/blueprint/table_${name}.js`, option)
+      this.template('table.js', `src/blueprints/table_${fileName}.js`, option)
     }
     if (type === 'crud' || all){
-      this.template('crud.js', `src/blueprint/crud_${name}.js`, option)
+      this.template('crud.js', `src/blueprints/crud_${fileName}.js`, option)
     }
   },
   end () {

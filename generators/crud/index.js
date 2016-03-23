@@ -11,9 +11,17 @@ module.exports = generators.Base.extend({
     this.blueprint = require(this.destinationPath(this.blueprintFileName))
     this.blueprint.pluraName = Inflector.pluralize(this.blueprint.moduleName)
     if (!this.blueprint.urlGet) this.blueprint.urlGet = this.blueprint.moduleName
+    if (!this.blueprint.urlGetItem) this.blueprint.urlGetItem = this.blueprint.urlGet
+    if (!this.blueprint.urlGetList) this.blueprint.urlGetList = this.blueprint.urlGet
     if (!this.blueprint.urlAdd) this.blueprint.urlAdd = this.blueprint.moduleName
     if (!this.blueprint.urlUpdate) this.blueprint.urlUpdate = this.blueprint.moduleName
     if (!this.blueprint.urlDel) this.blueprint.urlDel = this.blueprint.moduleName
+    this.blueprint.hasOwner = (url) => {
+      return /\$\{owner\}/i.test(url)
+    }
+    this.blueprint.hasKey = (url) => {
+      return /\$\{key\}/i.test(url)
+    }
   },
   writing () {
     var distFolder = this.distFolder || 'src/redux/modules/'
