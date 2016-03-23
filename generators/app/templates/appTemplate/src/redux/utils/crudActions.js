@@ -221,7 +221,7 @@ function endDelItem (actionTypes, newList) {
 export function delItem (module, url, key, success, error) {
   return (dispatch, getState) => {
     dispatch(startDelItem(module.types))
-    return requester.del(url)
+    return requester.delete(url)
           .then((res) => {
             const {list} = getState()[module.name]
             dispatch(endDelItem(module.types,
