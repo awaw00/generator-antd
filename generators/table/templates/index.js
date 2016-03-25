@@ -40,7 +40,7 @@ const <%- tableName %> = React.createClass({
     this.columns = [
       <%_ for(var i = 0; i < cols.length; i++) { _%>
         <%_ if (cols[i].renderAs) { _%>
-      {title: '<%- cols[i].title %>}'<%- cols[i].dataIndex ? ', dataIndex: ' + '\'' + cols[i].dataIndex + '\'' : '' %>, render: (t, r) => {
+      {title: '<%- cols[i].title %>'<%- cols[i].dataIndex ? ', dataIndex: ' + '\'' + cols[i].dataIndex + '\'' : '' %>, render: (t, r) => {
         return <span>{<%- cols[i].renderAs %>}</span>
       }}<%- (i === cols.length - 1 && methods.length === 0 ? '' : ',') %>
         <%_ } else if (cols[i].filter) { _%>
