@@ -6,6 +6,7 @@ module.exports = generators.Base.extend({
     generators.Base.apply(this, arguments)
     this.sourceRoot(path.resolve(__dirname, 'templates'))
   },
+  answer: {},
   prompting () {
     var done = this.async()
     this.prompt([{
@@ -19,8 +20,7 @@ module.exports = generators.Base.extend({
       message: 'blueprint name:',
       default: 'blueprint'
     }], (answers) => {
-      this.config.set('type', answers.type)
-      this.config.set('name', answers.name)
+      this.answer = answers
       done()
     })
   },
@@ -28,8 +28,8 @@ module.exports = generators.Base.extend({
     this.log('')
     this.log('start create blueprint files...')
     this.log('')
-    var type = this.config.get('type')
-    var name = this.config.get('name')
+    var name = this.answer.name
+    var type = this.answer.type
     var fileName = Inflector.underscore(name)
     var option = {
       name,
