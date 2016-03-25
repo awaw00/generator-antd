@@ -6,5 +6,7 @@ module.exports = {
           .replace(/:/g, ': ')
           .replace('\'true\'', 'true')
           .replace('\'false\'', 'false')
+          .replace(/(\'|\")(\/.*\/\w?)(\'|\")/, '$2')
+          .replace('\\\\', '\\')
   }
 }

@@ -1,8 +1,11 @@
 import React, { PropTypes } from 'react'
 import Table from 'antd/lib/table'
-<% if (methods.length > 0) { -%>
+<%_ if (methods.length > 0) { _%>
 import Button from 'antd/lib/button'
-<% } -%>
+<%_ } _%>
+<%_ if (cols.filter((i) => i.filter).length > 0) { _%>
+import filters from 'utils/filters'
+<%_ } _%>
 
 const <%- tableName %> = React.createClass({
   columns: [],
@@ -36,7 +39,17 @@ const <%- tableName %> = React.createClass({
   componentWillMount () {
     this.columns = [
       <%_ for(var i = 0; i < cols.length; i++) { _%>
-      {title: '<%- cols[i].title %>', <%- cols[i].renderAs ? ('render: (t, r) => <span>{' + cols[i].renderAs + '}</span>') : (`dataIndex: '${cols[i].dataIndex}'`) %>}<%- (i === cols.length - 1 && methods.length === 0 ? '' : ',') %>
+        <%_ if (cols[i].renderAs) { _%>
+      {title: '<%- cols[i].title %>}', render: (t, r) => {
+        return <span>{<%- cols[i].renderAs %>}</span>
+      }}<%- (i === cols.length - 1 && methods.length === 0 ? '' : ',') %>
+        <%_ } else if (cols[i].filter) { _%>
+      {title: '<%- cols[i].title %>', render: (t, r) => {
+        return <span>{filters.<%- cols[i].filter %>(r.<%- cols[i].dataIndex %>)}</span>
+      }}<%- (i === cols.length - 1 && methods.length === 0 ? '' : ',') %>
+        <%_ } else { _%>
+      {title: '<%- cols[i].title %>', dataIndex: '<%- cols[i].dataIndex %>'}<%- (i === cols.length - 1 && methods.length === 0 ? '' : ',') %>
+        <%_ } _%>
       <%_ } _%>
       <%_ if (methods.length > 0) { _%>
       {title: '操作', render: (t, r) => {
