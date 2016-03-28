@@ -59,7 +59,7 @@ const <%- blueprint.formName %> = React.createClass({
   },
   onOk () {
     const {okHandler, form} = this.props
-    const {validateFields, getFieldsValue} = form
+    const {validateFields} = form
     validateFields((errors, values) => {
       if (errors) {
         return
@@ -81,8 +81,8 @@ const <%- blueprint.formName %> = React.createClass({
     const {visible, cancelHandler, editMode, confirmLoading} = this.props
     const title = editMode === 'new' ? '<%- blueprint.newTitle %>' : '<%- blueprint.editTitle %>'
     const formLayout = {
-      labelCol: {span: <%- blueprint.labelCol ? blueprint.labelCol : 4 %>},
-      wrapperCol: {span: <%- blueprint.wrapperCol ? blueprint.wrapperCol : 16 %>}
+      labelCol: {span: <%- blueprint.labelCol ? blueprint.labelCol : 5 %>},
+      wrapperCol: {span: <%- blueprint.wrapperCol ? blueprint.wrapperCol : 15 %>}
     }
 
     const {getFieldProps} = this.props.form
