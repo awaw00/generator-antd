@@ -20,4 +20,8 @@
   *:after {
     box-sizing: inherit;
   }
+
+  label{
+    font-weight: normal;
+  }
 }

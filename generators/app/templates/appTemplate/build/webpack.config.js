@@ -178,18 +178,38 @@ const isUsingCSSModules = !!PATHS_TO_TREAT_AS_CSS_MODULES.length
 const cssModulesRegex = new RegExp(`(${PATHS_TO_TREAT_AS_CSS_MODULES.join('|')})`)
 
 // Loaders for styles that need to be treated as CSS modules.
-const cssModulesLoader = [
-  BASE_CSS_LOADER,
-  'modules',
-  'importLoaders=1',
-  'localIdentName=[name]__[local]___[hash:base64:5]'
-].join('&')
 
+if (isUsingCSSModules) {
+  const cssModulesLoader = [
+    BASE_CSS_LOADER,
+    'modules',
+    'importLoaders=1',
+    'localIdentName=[name]__[local]___[hash:base64:5]'
+  ].join('&')
+
+  webpackConfig.module.loaders.push({
+    test: /\.css$/,
+    include: cssModulesRegex,
+    loaders: [
+      'style',
+      cssModulesLoader,
+      'postcss'
+    ]
+  })
+}
+
+// Loaders for files that should not be treated as CSS modules.
+const excludeCSSModules = isUsingCSSModules ? cssModulesRegex : false
 webpackConfig.module.loaders.push({
   test: /\.css$/,
-  exclude: 'node_modules',
-  loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader'
+  exclude: excludeCSSModules,
+  loaders: [
+    'style',
+    BASE_CSS_LOADER,
+    'postcss'
+  ]
 })
+
 
 // ------------------------------------
 // Style Configuration
