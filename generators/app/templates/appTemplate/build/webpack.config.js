@@ -1,5 +1,6 @@
 import webpack from 'webpack'
 import cssnano from 'cssnano'
+import precss from 'precss'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import config from '../config'
@@ -89,6 +90,17 @@ if (!__TEST__) {
 // ------------------------------------
 // Pre-Loaders
 // ------------------------------------
+/*
+[ NOTE ]
+We no longer use eslint-loader due to it severely impacting build
+times for larger projects. `npm run lint` still exists to aid in
+deploy processes (such as with CI), and it's recommended that you
+use a linting plugin for your IDE in place of this loader.
+
+If you do wish to continue using the loader, you can uncomment
+the code below and run `npm i --save-dev eslint-loader`. This code
+will be removed in a future release.
+
 webpackConfig.module.preLoaders = [{
   test: /\.(js|jsx)$/,
   loader: 'eslint',
@@ -99,6 +111,7 @@ webpackConfig.eslint = {
   configFile: paths.base('.eslintrc'),
   emitWarning: __DEV__
 }
+*/
 
 // ------------------------------------
 // Loaders
@@ -146,7 +159,7 @@ webpackConfig.module.loaders = [{
 // ------------------------------------
 // We use cssnano with the postcss loader, so we tell
 // css-loader not to duplicate minimization.
-const BASE_CSS_LOADER = 'css?-minimize'
+const BASE_CSS_LOADER = 'css?sourceMap&-minimize'
 
 // Add any packge names here whose styles need to be treated as CSS modules.
 // These paths will be combined into a single regex.
@@ -165,71 +178,29 @@ const isUsingCSSModules = !!PATHS_TO_TREAT_AS_CSS_MODULES.length
 const cssModulesRegex = new RegExp(`(${PATHS_TO_TREAT_AS_CSS_MODULES.join('|')})`)
 
 // Loaders for styles that need to be treated as CSS modules.
-if (isUsingCSSModules) {
-  const cssModulesLoader = [
-    BASE_CSS_LOADER,
-    'modules',
-    'importLoaders=1',
-    'localIdentName=[name]__[local]___[hash:base64:5]'
-  ].join('&')
+const cssModulesLoader = [
+  BASE_CSS_LOADER,
+  'modules',
+  'importLoaders=1',
+  'localIdentName=[name]__[local]___[hash:base64:5]'
+].join('&')
 
-  webpackConfig.module.loaders.push({
-    test: /\.scss$/,
-    include: cssModulesRegex,
-    loaders: [
-      'style',
-      cssModulesLoader,
-      'postcss',
-      'sass?sourceMap'
-    ]
-  })
-
-  webpackConfig.module.loaders.push({
-    test: /\.css$/,
-    include: cssModulesRegex,
-    loaders: [
-      'style',
-      cssModulesLoader,
-      'postcss'
-    ]
-  })
-}
-
-// Loaders for files that should not be treated as CSS modules.
-const excludeCSSModules = isUsingCSSModules ? cssModulesRegex : false
-webpackConfig.module.loaders.push({
-  test: /\.scss$/,
-  exclude: excludeCSSModules,
-  loaders: [
-    'style',
-    BASE_CSS_LOADER,
-    'postcss',
-    'sass?sourceMap'
-  ]
-})
 webpackConfig.module.loaders.push({
   test: /\.css$/,
-  exclude: excludeCSSModules,
-  loaders: [
-    'style',
-    BASE_CSS_LOADER,
-    'postcss'
-  ]
+  exclude: 'node_modules',
+  loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader'
 })
 
 // ------------------------------------
 // Style Configuration
 // ------------------------------------
-webpackConfig.sassLoader = {
-  includePaths: paths.client('styles')
-}
 
 webpackConfig.postcss = [
   cssnano({
     autoprefixer: {
       add: true,
       remove: true,
-      browsers: ['last 2 versions']
+      browsers: ['>1%']
     },
     discardComments: {
       removeAll: true
@@ -237,8 +208,10 @@ webpackConfig.postcss = [
     discardUnused: false,
     mergeIdents: false,
     reduceIdents: false,
-    safe: true
-  })
+    safe: true,
+    sourcemap: true
+  }),
+  precss
 ]
 
 // File loaders
@@ -250,7 +223,7 @@ webpackConfig.module.loaders.push(
   { test: /\.ttf(\?.*)?$/,   loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/octet-stream' },
   { test: /\.eot(\?.*)?$/,   loader: 'file?prefix=fonts/&name=[path][name].[ext]' },
   { test: /\.svg(\?.*)?$/,   loader: 'url?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml' },
-  { test: /\.(png|jpg)$/,    loader: 'url?limit=8192' }
+  { test: /\.(png|jpg|gif|bmp)$/,    loader: 'url?limit=8192' }
 )
 /* eslint-enable */
 
@@ -263,18 +236,18 @@ webpackConfig.module.loaders.push(
 if (!__DEV__) {
   debug('Apply ExtractTextPlugin to CSS loaders.')
   webpackConfig.module.loaders.filter((loader) =>
-    loader.loaders && loader.loaders.find((name) => /css/.test(name.split('?')[0]))
-  ).forEach((loader) => {
-    const [first, ...rest] = loader.loaders
-    loader.loader = ExtractTextPlugin.extract(first, rest.join('!'))
-    delete loader.loaders
-  })
+  loader.loaders && loader.loaders.find((name) => /css/.test(name.split('?')[0]))
+).forEach((loader) => {
+  const [first, ...rest] = loader.loaders
+  loader.loader = ExtractTextPlugin.extract(first, rest.join('!'))
+  delete loader.loaders
+})
 
-  webpackConfig.plugins.push(
-    new ExtractTextPlugin('[name].[contenthash].css', {
-      allChunks: true
-    })
-  )
+webpackConfig.plugins.push(
+  new ExtractTextPlugin('[name].[contenthash].css', {
+    allChunks: true
+  })
+)
 }
 
 export default webpackConfig
