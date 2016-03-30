@@ -13,7 +13,7 @@ module.exports = generators.Base.extend({
       type: 'list',
       name: 'type',
       message: 'choose which blueprint you want to create:',
-      choices: ['form', 'table', 'crud', 'all']
+      choices: ['form', 'table', 'crud', 'view', 'all']
     }, {
       type: 'input',
       name: 'name',
@@ -45,6 +45,9 @@ module.exports = generators.Base.extend({
     }
     if (type === 'crud' || all){
       this.template('crud.js', `src/blueprints/crud_${fileName}.js`, option)
+    }
+    if (type === 'view' || all){
+      this.template('view.js', `src/blueprints/view_${fileName}.js`, option)
     }
   },
   end () {
