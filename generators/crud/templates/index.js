@@ -39,10 +39,10 @@ function getList (<%- hasOwner(urlGetList) ? 'owner, ' : '' %><%- pagination ? '
   return crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- urlGetList %>`, success, error)
 }
 function startEditItem (item) {
-  return crudActions.startEditItem(moduleDef.types, item)
+  return crudActions.startEditItem(moduleDef, item)
 }
 function endEditItem () {
-  return crudActions.endEditItem(moduleDef.types)
+  return crudActions.endEditItem(moduleDef)
 }
 function addItem (<%- hasOwner(urlAdd) ? 'owner, ' : '' %>item, success, error) {
   return crudActions.addItem(moduleDef, `${apiUrl}/<%- urlAdd %>`, item, success, error)
