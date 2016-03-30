@@ -16,11 +16,6 @@ const <%- blueprint.formName %> = React.createClass({
     editMode: PropTypes.oneOf(['new', 'edit']).isRequired,
     editTarget: PropTypes.object // null if editMode is 'new'
   },
-  initialState: {
-    <%_ for (var i = 0; i < initialStates.length; i++) { _%>
-    <%- initialStates[i] %>
-    <%_ } _%>
-  },
   getDefaultProps () {
     return {
       confirmLoading: false,
