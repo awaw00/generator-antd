@@ -10,6 +10,7 @@ module.exports = generators.Base.extend({
     this.blueprint = require(blueprintFilePath)
     if (this.blueprint.pagination === undefined) this.blueprint.pagination = false
     if (this.blueprint.size === undefined) this.blueprint.size = ''
+    if (this.blueprint.methods === undefined) this.blueprint.methods = []
   },
   writing () {
     this.fs.copyTpl(
