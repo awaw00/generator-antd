@@ -234,7 +234,13 @@ export function delItem (module, url, key, success, error) {
           })
   }
 }
-
+export function createCrudActionTypes (actionTypes) {
+  let types = {}
+  for (const key in actionTypes) {
+    types[actionTypes[key]] = actionTypes[key]
+  }
+  return types
+}
 export default {
   getItem,
   getList,

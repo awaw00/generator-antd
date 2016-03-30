@@ -1,7 +1,6 @@
 import {apiUrl} from 'constants'
-import {createActionTypes} from 'redux/utils'
 import createReducer from 'redux/utils/createReducer'
-import crudActions from 'redux/utils/crudActions'
+import crudActions, {createCrudActionTypes} from 'redux/utils/crudActions'
 
 <%_ PLURANAME = pluraName.toUpperCase() _%>
 <%_ MODULENAME = moduleName.toUpperCase() _%>
@@ -78,4 +77,4 @@ const initialState = {
   error: null
 }
 
-export default createReducer(initialState, createActionTypes(actionTypes), ACTION_HANDLERS)
+export default createReducer(initialState, createCrudActionTypes(actionTypes), ACTION_HANDLERS)
