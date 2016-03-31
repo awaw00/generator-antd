@@ -7,7 +7,7 @@ import <%- table.tableName %> from 'components/<%- table.tableName %>'
 <%_ } _%>
 <%_ if (form) { _%>
 import <%- form.formName %> from 'components/<%- form.formName %>'
-import {Button, message} from 'antd'
+import {Button, message, Modal} from 'antd'
 <%_ } _%>
 
 const <%- viewName %> = React.createClass({
