@@ -67,7 +67,7 @@ function addItem (item, success, error) {
     dispatch(crudActions.addItem(moduleDef, `${apiUrl}/<%- getRoute(routeAdd) %>`, item, success, error))
   }
   <%_ } else { _%>
-  return crudActions.addItem(moduleDef, `${apiUrl}/<%- getRoute(routeAdd) %>`, item, success, error))
+  return crudActions.addItem(moduleDef, `${apiUrl}/<%- getRoute(routeAdd) %>`, item, success, error)
   <%_ } _%>
 }
 function updateItem (key, item, success, error) {
