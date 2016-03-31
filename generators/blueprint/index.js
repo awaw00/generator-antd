@@ -35,7 +35,7 @@ module.exports = generators.Base.extend({
       name,
       classifyName: Inflector.classify(name),
       titleizeName: Inflector.titleize(name),
-      underscoreName: Inflector.underscore(name)
+      underscoreName: fileName
     }
     var all = type === 'all'
     if (type === 'form' || all) {
