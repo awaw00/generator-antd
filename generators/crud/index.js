@@ -1,4 +1,3 @@
-// TODO: 分页获取
 var Inflector = require('inflected')
 var generators = require('yeoman-generator')
 module.exports = generators.Base.extend({
