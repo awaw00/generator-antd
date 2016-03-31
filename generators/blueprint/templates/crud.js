@@ -2,9 +2,10 @@ module.exports = {
   moduleName: '<%- name %>',
   keyName: 'keyName',
   pagination: true,
-  urlGetItem: 'owner/${owner}/<%- name %>/${key}',
-  urlGetList: 'owner/${owner}/<%- name %>/${count}/${page}',
-  urlAdd: 'owner/${owner}/<%- name %>',
-  urlUpdate: 'owner/${owner}/<%- name %>/${key}',
-  urlDel: 'owner/${owner}/<%- name %>/${key}'
+  urlBase: 'owner/${owner}/<%- name %>',
+  urlGetItem: '${key}',
+  urlGetList: '${count}/${page}',
+  urlAdd: '',
+  urlUpdate: '${key}',
+  urlDel: '${key}'
 }

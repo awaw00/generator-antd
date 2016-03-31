@@ -11,12 +11,13 @@ module.exports = generators.Base.extend({
     var base = {
       moduleName: 'moduleName',
       keyName: 'keyName',
-      pagination: false,
-      urlGetItem: 'moduleName/${key}',
-      urlGetList: 'moduleName',
-      urlAdd: 'moduleName',
-      urlUpdate: 'moduleName/${key}',
-      urlDel: 'moduleName/${key}'
+      pagination: true,
+      routeBase: 'moduleName',
+      routeGetItem: '${key}',
+      routeGetList: '${count}/${page}',
+      routeAdd: '',
+      routeUpdate: '${key}',
+      routeDel: '${key}'
     }
     this.blueprint = require(this.destinationPath(this.blueprintFileName))
     this.blueprint.pluraName = Inflector.pluralize(this.blueprint.moduleName)
@@ -24,9 +25,15 @@ module.exports = generators.Base.extend({
       return /\$\{key\}/i.test(url)
     }
     this.blueprint = Object.assign(base, this.blueprint)
-    var crud = this.blueprint
-    this.blueprint.hasOwner = [crud.urlGetItem || '', crud.urlGetList || '',
-      crud.urlAdd || '', crud.urlUpdate || '', crud.urlDel || ''].join(',').indexOf('${owner}') >= 0
+    this.blueprint.hasOwner = /\$\{owner\}/.test(this.blueprint.urlBase)
+    this.blueprint.getRoute = ((bp) => {
+      return (route) => {
+        var arr = []
+        if (bp.routeBase) arr.push(bp.routeBase)
+        if (route) arr.push(route)
+        return arr.join('/')
+      }
+    })(this.blueprint)
   },
   writing () {
     var distFolder = this.distFolder || 'src/redux/modules/'

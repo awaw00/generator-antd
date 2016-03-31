@@ -38,20 +38,20 @@ function getItem (key, success, error) {
   <%_ if (hasOwner) { _%>
   return (dispatch, getState) => {
     const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.getItem(moduleDef, `${apiUrl}/<%- urlGetItem %><%- hasKey(urlGetItem) ? '' : '/${key}' %>`, success, error))
+    dispatch(crudActions.getItem(moduleDef, `${apiUrl}/<%- getRoute(routeGetItem) %><%- hasKey(routeGetItem) ? '' : '/${key}' %>`, success, error))
   }
   <%_ } else { _%>
-  return crudActions.getItem(moduleDef, `${apiUrl}/<%- urlGetItem %><%- hasKey(urlGetItem) ? '' : '/${key}' %>`, success, error)
+  return crudActions.getItem(moduleDef, `${apiUrl}/<%- getRoute(routeGetItem) %><%- hasKey(routeGetItem) ? '' : '/${key}' %>`, success, error)
   <%_ } _%>
 }
 function getList (<%- pagination ? 'page, count, ' : '' %>success, error) {
   <%_ if (hasOwner) { _%>
   return (dispatch, getState) => {
     const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- urlGetList %>`, success, error))
+    dispatch(crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- getRoute(routeGetList) %>`, success, error))
   }
   <%_ } else { _%>
-  return crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- urlGetList %>`, success, error)
+  return crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- getRoute(routeGetList) %>`, success, error)
   <%_ } _%>
 }
 function startEditItem (item) {
@@ -64,30 +64,30 @@ function addItem (item, success, error) {
   <%_ if (hasOwner) { _%>
   return (dispatch, getState) => {
     const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.addItem(moduleDef, `${apiUrl}/<%- urlAdd %>`, item, success, error))
+    dispatch(crudActions.addItem(moduleDef, `${apiUrl}/<%- getRoute(routeAdd) %>`, item, success, error))
   }
   <%_ } else { _%>
-  return crudActions.addItem(moduleDef, `${apiUrl}/<%- urlAdd %>`, item, success, error))
+  return crudActions.addItem(moduleDef, `${apiUrl}/<%- getRoute(routeAdd) %>`, item, success, error))
   <%_ } _%>
 }
 function updateItem (key, item, success, error) {
   <%_ if (hasOwner) { _%>
   return (dispatch, getState) => {
     const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.updateItem(moduleDef, `${apiUrl}/<%- urlUpdate %><%- hasKey(urlUpdate) ? '' : '/${key}' %>`, key, item, success, error))
+    dispatch(crudActions.updateItem(moduleDef, `${apiUrl}/<%- getRoute(routeUpdate) %><%- hasKey(routeUpdate) ? '' : '/${key}' %>`, key, item, success, error))
   }
   <%_ } else { _%>
-  return crudActions.updateItem(moduleDef, `${apiUrl}/<%- urlUpdate %><%- hasKey(urlUpdate) ? '' : '/${key}' %>`, key, item, success, error)
+  return crudActions.updateItem(moduleDef, `${apiUrl}/<%- getRoute(routeUpdate) %><%- hasKey(routeUpdate) ? '' : '/${key}' %>`, key, item, success, error)
   <%_ } _%>
 }
 function delItem (key, success, error) {
   <%_ if (hasOwner) { _%>
   return (dispatch, getState) => {
     const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.delItem(moduleDef, `${apiUrl}/<%- urlDel %><%- hasKey(urlDel) ? '' : '/${key}' %>`, key, success, error))
+    dispatch(crudActions.delItem(moduleDef, `${apiUrl}/<%- getRoute(routeDel) %><%- hasKey(routeDel) ? '' : '/${key}' %>`, key, success, error))
   }
   <%_ } else { _%>
-  return crudActions.delItem(moduleDef, `${apiUrl}/<%- urlDel %><%- hasKey(urlDel) ? '' : '/${key}' %>`, key, success, error)
+  return crudActions.delItem(moduleDef, `${apiUrl}/<%- getRoute(routeDel) %><%- hasKey(routeDel) ? '' : '/${key}' %>`, key, success, error)
   <%_ } _%>
 }
 <%_ if (hasOwner) { _%>
