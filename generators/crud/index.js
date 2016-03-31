@@ -20,13 +20,13 @@ module.exports = generators.Base.extend({
     }
     this.blueprint = require(this.destinationPath(this.blueprintFileName))
     this.blueprint.pluraName = Inflector.pluralize(this.blueprint.moduleName)
-    this.blueprint.hasOwner = (url) => {
-      return /\$\{owner\}/i.test(url)
-    }
     this.blueprint.hasKey = (url) => {
       return /\$\{key\}/i.test(url)
     }
     this.blueprint = Object.assign(base, this.blueprint)
+    var crud = this.blueprint
+    this.blueprint.hasOwner = [crud.urlGetItem || '', crud.urlGetList || '',
+      crud.urlAdd || '', crud.urlUpdate || '', crud.urlDel || ''].join(',').indexOf('${owner}') >= 0
   },
   writing () {
     var distFolder = this.distFolder || 'src/redux/modules/'

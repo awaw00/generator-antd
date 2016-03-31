@@ -10,6 +10,9 @@ module.exports = generators.Base.extend({
     this.blueprint = require(blueprintFilePath)
     this.blueprint.table = this.blueprint.table || null
     this.blueprint.form = this.blueprint.form || null
+    var crud = this.blueprint.crud
+    this.blueprint.hasOwner = [crud.urlGetItem || '', crud.urlGetList || '',
+      crud.urlAdd || '', crud.urlUpdate || '', crud.urlDel || ''].join(',').indexOf('${owner}') >= 0
   },
   writing () {
     this.fs.copyTpl(

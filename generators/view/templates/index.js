@@ -38,7 +38,25 @@ const <%- viewName %> = React.createClass({
     <%_ } _%>
     <%_ for (var i = 0; i < table.methods.length; i++) { _%>
   item<%- table.methods[i].name[0].toUpperCase() + table.methods[i].name.slice(1) %> (item) {
+      <%_ if (/edit/i.test(table.methods[i].name)) { _%>
+    this.props.actions.startEditItem(item)
+      <%_ } else if (/del/i.test(table.methods[i].name)) { _%>
+    Modal.confirm({
+      title: '确认操作',
+      content: '确认要删除该条目吗？',
+      onOk: () => {
+        this.props.actions.delItem(item.<%- crud.keyName %>, () => {
+          message.success('操作成功')
+        }, (err) => {
+          message.error('操作失败')
+          console.error(err)
+        })
+      }
+    })
+      <%_ } else { _%>
+    // TODO: handle <%- table.methods[i].name %>
 
+      <%_ } _%>
   },
     <%_ } _%>
   <%_ } _%>
