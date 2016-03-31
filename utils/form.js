@@ -57,19 +57,19 @@ module.exports = {
       } else if (i.type === 'checkbox-group') {
         modules.add("import Checkbox from 'antd/lib/checkbox'")
         var options
-        if (typeof i.options === 'object') {
-          options = Object.keys(i.options)
+        if (i.options instanceof Array) {
+          options = i.options
         } else {
-          options = utils.jsonToStr(i.options)
+          options = Object.keys(i.options)
         }
-        return `<Checkbox.Group options={${options}} {...${i.fieldName}Props} />`
+        return `<Checkbox.Group options={${utils.jsonToStr(options)}} {...${i.fieldName}Props} />`
       } else if (i.type === 'radio-group') {
         modules.add("import Radio from 'antd/lib/radio'")
         var options
-        if (typeof i.options === 'object') {
-          options = Object.keys(i.options)
+        if (i.options instanceof Array) {
+          options = i.options
         } else {
-          options = utils.jsonToStr(i.options)
+          options = Object.keys(i.options)
         }
         var node =
         `<Radio.Group {...${i.fieldName}Props}>\n` +
