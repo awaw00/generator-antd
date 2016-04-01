@@ -25,7 +25,8 @@ module.exports = generators.Base.extend({
       return /\$\{key\}/i.test(url)
     }
     this.blueprint = Object.assign(base, this.blueprint)
-    this.blueprint.hasOwner = /\$\{owner\}/.test(this.blueprint.urlBase)
+    this.blueprint.hasOwner = /\$\{owner\}/.test(this.blueprint.routeBase)
+    this.log(this.blueprint.hasOwner)
     this.blueprint.getRoute = ((bp) => {
       return (route) => {
         var arr = []

@@ -75,7 +75,7 @@ const <%- viewName %> = React.createClass({
         console.error(err)
       })
     } else {
-      this.props.actions.updateItem(item.<%- crud.keyName %>, item, () => {
+      this.props.actions.updateItem(editTarget.<%- crud.keyName %>, item, () => {
         message.success('操作成功')
         this.props.actions.endEditItem()
       }, (err) => {

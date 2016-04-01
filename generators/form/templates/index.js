@@ -26,6 +26,11 @@ const <%- blueprint.formName %> = React.createClass({
       editTarget: null
     }
   },
+  initialState: {
+  <%_ for (var i = 0; i < initialStates.length; i++) { _%>
+    <%- initialStates[i] %>
+  <%_ } _%>
+  },
   componentWillReceiveProps (nextProps) {
     const {visible, editMode, editTarget} = nextProps
     if (!visible || visible && this.props.visible) return
