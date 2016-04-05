@@ -7,6 +7,5 @@ export default () => ({
     chunks : true,
     chunkModules : true,
     colors : true
-  },
-  compiler_public_path: '/'
+  }
 })
