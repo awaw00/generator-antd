@@ -4,9 +4,9 @@ module.exports = generators.Base.extend({
     generators.Base.apply(this, arguments)
   },
   initializing () {
-    this.log('-----------------------------------------')
-    this.log('welcome to use react-redux-plus generator')
-    this.log('-----------------------------------------')
+    this.log('-----------------------------')
+    this.log('welcome to use generator-antd')
+    this.log('-----------------------------')
   },
   prompting () {
     var done = this.async()
