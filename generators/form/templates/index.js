@@ -1,12 +1,12 @@
-import React, { PropTypes } from 'react'
+import React, {PropTypes} from 'react'
 import Modal from 'antd/lib/modal'
 import Form from 'antd/lib/form'
 <% for (var i = 0; i < modules.length; i++) { -%>
 <%- modules[i] %>
 <% } -%>
-<%_ states = blueprint.items.map((i) => i.fieldName) _%><%_ statesStr = states.join(', ') _%>
+<%_ states = items.map((i) => i.fieldName) _%><%_ statesStr = states.join(', ') _%>
 
-const <%- blueprint.formName %> = React.createClass({
+const <%- blueprint.form.name %> = React.createClass({
   propTypes: {
     form: PropTypes.object.isRequired,
     confirmLoading: PropTypes.bool,
@@ -40,8 +40,8 @@ const <%- blueprint.formName %> = React.createClass({
       nextProps.form.setFieldsValue(this.initialState)
     } else {
       let newState = Object.assign({}, editTarget)
-      <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
-        <%_ item = blueprint.items[i] _%>
+      <%_ for (var i = 0; i < items.length; i++) { _%>
+        <%_ item = items[i] _%>
         <%_ if (typeof item.options === 'object') { _%>
           <%_ reverseMap = {} _%>
           <%_ for (var key in item.options) { _%>
@@ -64,8 +64,8 @@ const <%- blueprint.formName %> = React.createClass({
       if (!okHandler) {
         return
       }
-      <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
-        <%_ item = blueprint.items[i] _%>
+      <%_ for (var i = 0; i < items.length; i++) { _%>
+        <%_ item = items[i] _%>
         <%_ if (typeof item.options === 'object') { _%>
       const <%- item.fieldName %>Map = <%- stringify(item.options) %>
       values['<%- item.fieldName %>'] = <%- item.fieldName %>Map[values['<%- item.fieldName %>']]
@@ -76,15 +76,22 @@ const <%- blueprint.formName %> = React.createClass({
   },
   render () {
     const {visible, cancelHandler, editMode, confirmLoading} = this.props
-    const title = editMode === 'new' ? '<%- blueprint.newTitle %>' : '<%- blueprint.editTitle %>'
+    const title = editMode === 'new' ? '<%- blueprint.form.newTitle %>' : '<%- blueprint.form.editTitle %>'
     const formLayout = {
-      labelCol: {span: <%- blueprint.labelCol ? blueprint.labelCol : 5 %>},
-      wrapperCol: {span: <%- blueprint.wrapperCol ? blueprint.wrapperCol : 15 %>}
+      labelCol: {span: <%- blueprint.form.layout.labelCol ? blueprint.form.layout.labelCol : 4 %>},
+      wrapperCol: {span: <%- blueprint.form.layout.wrapperCol ? blueprint.form.layout.wrapperCol : 16 %>}
+    }
+    const modalProps = {
+      title,
+      visible,
+      confirmLoading,
+      onCancel: cancelHandler,
+      onOk: this.onOk
     }
 
     const {getFieldProps} = this.props.form
-    <%_ for (var i = 0; i < blueprint.items.length; i++) { _%>
-    <%_ item = blueprint.items[i] _%>
+    <%_ for (var i = 0; i < items.length; i++) { _%>
+    <%_ item = items[i] _%>
     <%_ name = item.fieldName _%>
       <%_ if (item.type === 'checkbox') { _%>
     const <%- name %>Props = getFieldProps('<%- name %>',
@@ -95,10 +102,10 @@ const <%- blueprint.formName %> = React.createClass({
       <%_ } _%>
     <%_ } _%>
     return (
-      <Modal confirmLoading={confirmLoading} title={title} visible={visible} onCancel={cancelHandler} onOk={this.onOk}>
+      <Modal {...modalProps}>
         <Form horizontal form={this.props.form}>
           <%_ for (var i = 0; i < nodes.length; i++) { _%>
-          <Form.Item label='<%- blueprint.items[i].label %>' {...formLayout}>
+          <Form.Item label='<%- items[i].label %>' {...formLayout}>
             <%- nodes[i] %>
           </Form.Item>
           <%_ } _%>
@@ -108,4 +115,4 @@ const <%- blueprint.formName %> = React.createClass({
   }
 })
 
-export default Form.create()(<%- blueprint.formName %>)
+export default Form.create()(<%- blueprint.form.name %>)

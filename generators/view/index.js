@@ -2,11 +2,13 @@ var generators = require('yeoman-generator')
 module.exports = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments)
-    this.argument('blueprintFileName', {type: String, required: true})
+    if (!this.options.blueprintFileName) {
+      this.argument('blueprintFileName', {type: String, required: true})
+    }
   },
   blueprint: null,
   initializing () {
-    var blueprintFilePath = this.destinationPath(this.blueprintFileName)
+    var blueprintFilePath = this.destinationPath(this.blueprintFileName || this.options.blueprintFileName)
     this.blueprint = require(blueprintFilePath)
     this.blueprint.table = this.blueprint.table || null
     this.blueprint.form = this.blueprint.form || null

@@ -1,47 +1,33 @@
 var Inflector = require('inflected')
 var generators = require('yeoman-generator')
+var path = require('path')
 module.exports = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments)
-    this.argument('blueprintFileName', {required: true, type: String})
-    this.argument('distFolder', {type: String, required: false})
+    if (!this.options.blueprintFileName) {
+      this.argument('blueprintFileName', {type: String, required: true})
+    }
   },
   blueprint: null,
   initializing () {
-    var base = {
-      moduleName: 'moduleName',
-      keyName: 'keyName',
-      pagination: true,
-      routeBase: 'moduleName',
-      routeGetItem: '${key}',
-      routeGetList: '${count}/${page}',
-      routeAdd: '',
-      routeUpdate: '${key}',
-      routeDel: '${key}'
+    var blueprint = require(this.destinationPath(this.blueprintFileName || this.options.blueprintFileName))
+    var crudBlueprint = {
+      modelName: blueprint.modelName,
+      modelKey: blueprint.modelKey,
+      pluraName: Inflector.pluralize(blueprint.modelName),
+      pagination: blueprint.pagination || false,
     }
-    this.blueprint = require(this.destinationPath(this.blueprintFileName))
-    this.blueprint.pluraName = Inflector.pluralize(this.blueprint.moduleName)
-    this.blueprint.hasKey = (url) => {
-      return /\$\{key\}/i.test(url)
-    }
-    this.blueprint = Object.assign(base, this.blueprint)
-    this.blueprint.hasOwner = /\$\{owner\}/.test(this.blueprint.routeBase)
-    this.log(this.blueprint.hasOwner)
-    this.blueprint.getRoute = ((bp) => {
-      return (route) => {
-        var arr = []
-        if (bp.routeBase) arr.push(bp.routeBase)
-        if (route) arr.push(route)
-        return arr.join('/')
-      }
-    })(this.blueprint)
+    this.blueprint = Object.assign(crudBlueprint, blueprint.crud)
   },
   writing () {
-    var distFolder = this.distFolder || 'src/redux/modules/'
-    this.fs.copyTpl(
-      this.templatePath('index.js'),
-      distFolder + this.blueprint.moduleName + '.js',
-      this.blueprint
-    )
+    var dist = this.destinationPath(path.join(
+      this.blueprint.dist, this.blueprint.modelName + '.js'
+    ))
+    console.log(dist, this.blueprint)
+    // this.fs.copyTpl(
+    //   this.templatePath('index.js'),
+    //   this.blueprint.dist + this.blueprint.moduleName + '.js',
+    //   this.blueprint
+    // )
   }
 })

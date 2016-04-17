@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React, {PropTypes} from 'react'
 import Table from 'antd/lib/table'
 <%_ if (methods.length > 0) { _%>
 import Button from 'antd/lib/button'
@@ -92,7 +92,13 @@ const <%- tableName %> = React.createClass({
     }
     <%_ } _%>
     return (
-      <Table<%- size ? ' size=\'' + size + '\' ' : ' ' %>loading={loading} pagination={pagination} columns={this.columns} dataSource={dataSource} rowKey={(i) => i.<%- keyName %>} />
+      <Table<%- size ? ' size=\'' + size + '\' ' : ' ' %>
+        loading={loading}
+        pagination={pagination}
+        columns={this.columns}
+        dataSource={dataSource}
+        rowKey={(i) => i.<%- keyName %>}
+        />
     )
   }
 })
