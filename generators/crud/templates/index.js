@@ -5,7 +5,7 @@ import crudActions, {createCrudActionTypes} from 'redux/utils/crudActions'
 <%_ PLURANAME = pluraName.toUpperCase() _%>
 <%_ MODULENAME = moduleName.toUpperCase() _%>
 export const actionTypes = {
-  requestFailure: '<%- PLURANAME %>_REQUEST_FAILURE',
+  requestFailure: '<%- MODULENAME %>_REQUEST_FAILURE',
   <%_ if (pagination) { _%>
   startFetchListOfPage: 'START_FETCH_<%- PLURANAME %>_OF_PAGE',
   endFetchListOfPage: 'END_FETCH_<%- PLURANAME %>_OF_PAGE',
