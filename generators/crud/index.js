@@ -11,11 +11,30 @@ module.exports = generators.Base.extend({
   blueprint: null,
   initializing () {
     var blueprint = require(this.destinationPath(this.blueprintFileName || this.options.blueprintFileName))
+    var opParams = new Set()
+    for (var key in blueprint.crud.operations) {
+      var re = new RegExp(/\$\{(.*?)\}/)
+      var string = blueprint.crud.operations[key]
+      var match = re.exec(string)
+      while(match != null) {
+        if (match[1] !== 'key') {
+          opParams.add(match[1])
+        }
+        string = string.substring(match.index + match[0].length)
+        match = re.exec(string)
+      }
+    }
     var crudBlueprint = {
-      modelName: blueprint.modelName,
-      modelKey: blueprint.modelKey,
+      keyName: blueprint.modelKey,
+      moduleName: blueprint.modelName,
       pluraName: Inflector.pluralize(blueprint.modelName),
+      classifyName: Inflector.classify(blueprint.modelName),
       pagination: blueprint.pagination || false,
+      opParams: [...opParams].map((i) => ({
+        name: i,
+        classifyName: Inflector.classify(i),
+        underscoreName: Inflector.underscore(i).toUpperCase()
+      }))
     }
     this.blueprint = Object.assign(crudBlueprint, blueprint.crud)
   },
@@ -23,11 +42,11 @@ module.exports = generators.Base.extend({
     var dist = this.destinationPath(path.join(
       this.blueprint.dist, this.blueprint.modelName + '.js'
     ))
-    console.log(dist, this.blueprint)
-    // this.fs.copyTpl(
-    //   this.templatePath('index.js'),
-    //   this.blueprint.dist + this.blueprint.moduleName + '.js',
-    //   this.blueprint
-    // )
+
+    this.fs.copyTpl(
+      this.templatePath('index.js'),
+      this.blueprint.dist + this.blueprint.moduleName + '.js',
+      this.blueprint
+    )
   }
 })

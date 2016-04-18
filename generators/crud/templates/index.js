@@ -6,9 +6,6 @@ import crudActions, {createCrudActionTypes} from 'redux/utils/crudActions'
 <%_ MODULENAME = moduleName.toUpperCase() _%>
 export const actionTypes = {
   requestFailure: '<%- PLURANAME %>_REQUEST_FAILURE',
-  <%_ if (hasOwner) { _%>
-  setOwner: 'SET_<%- PLURANAME %>_OWNER',
-  <%_ } _%>
   <%_ if (pagination) { _%>
   startFetchListOfPage: 'START_FETCH_<%- PLURANAME %>_OF_PAGE',
   endFetchListOfPage: 'END_FETCH_<%- PLURANAME %>_OF_PAGE',
@@ -34,76 +31,38 @@ const moduleDef = {
   types: actionTypes
 }
 
-function getItem (key, success, error) {
-  <%_ if (hasOwner) { _%>
-  return (dispatch, getState) => {
-    const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.getItem(moduleDef, `${apiUrl}/<%- getRoute(routeGetItem) %><%- hasKey(routeGetItem) ? '' : '/${key}' %>`, success, error))
-  }
+<%_ for (var key in operations) { _%>
+  <%_ if (['getItem', 'getList', 'addItem', 'updateItem', 'delItem'].indexOf(key) < 0) { _%>
+    <%_ continue _%>
   <%_ } else { _%>
-  return crudActions.getItem(moduleDef, `${apiUrl}/<%- getRoute(routeGetItem) %><%- hasKey(routeGetItem) ? '' : '/${key}' %>`, success, error)
+    <%_ var uri = operations[key] _%>
+    <%_ var re = new RegExp(/\$\{(.*?)\}/) _%>
+    <%_ var match = re.exec(uri) _%>
+    <%_ var params = new Set() _%>
+    <%_ while (match !== null) { _%>
+      <%_ params.add(match[1]) _%>
+      <%_ uri = uri.substring(match.index + match[0].length) _%>
+      <%_ match = re.exec(uri) _%>
+    <%_ } _%>
+    <%_ params = Array.from(params) _%>
+function <%- key %> (<%- params.join(', ') %><%- params.length === 0 ? '' : ', ' %>success, error) {
+  <%_ var requestUri = [baseUri, operations[key]].join('/').replace(/^\//, '').replace(/\/$/, '') _%>
+  <%_ if (key === 'getList' && pagination) { _%>
+  return crudActions.<%- key %><%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- requestUri %>`, success, error)
+  <%_ } else { _%>
+  return crudActions.<%- key %>(moduleDef, `${apiUrl}/<%- requestUri %>`, success, error)
   <%_ } _%>
 }
-function getList (<%- pagination ? 'page, count, ' : '' %>success, error) {
-  <%_ if (hasOwner) { _%>
-  return (dispatch, getState) => {
-    const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- getRoute(routeGetList) %>`, success, error))
-  }
-  <%_ } else { _%>
-  return crudActions.getList<%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- getRoute(routeGetList) %>`, success, error)
   <%_ } _%>
-}
+<%_ } _%>
 function startEditItem (item) {
   return crudActions.startEditItem(moduleDef, item)
 }
 function endEditItem () {
   return crudActions.endEditItem(moduleDef)
 }
-function addItem (item, success, error) {
-  <%_ if (hasOwner) { _%>
-  return (dispatch, getState) => {
-    const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.addItem(moduleDef, `${apiUrl}/<%- getRoute(routeAdd) %>`, item, success, error))
-  }
-  <%_ } else { _%>
-  return crudActions.addItem(moduleDef, `${apiUrl}/<%- getRoute(routeAdd) %>`, item, success, error)
-  <%_ } _%>
-}
-function updateItem (key, item, success, error) {
-  <%_ if (hasOwner) { _%>
-  return (dispatch, getState) => {
-    const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.updateItem(moduleDef, `${apiUrl}/<%- getRoute(routeUpdate) %><%- hasKey(routeUpdate) ? '' : '/${key}' %>`, key, item, success, error))
-  }
-  <%_ } else { _%>
-  return crudActions.updateItem(moduleDef, `${apiUrl}/<%- getRoute(routeUpdate) %><%- hasKey(routeUpdate) ? '' : '/${key}' %>`, key, item, success, error)
-  <%_ } _%>
-}
-function delItem (key, success, error) {
-  <%_ if (hasOwner) { _%>
-  return (dispatch, getState) => {
-    const {owner} = getState().<%- moduleName %>
-    dispatch(crudActions.delItem(moduleDef, `${apiUrl}/<%- getRoute(routeDel) %><%- hasKey(routeDel) ? '' : '/${key}' %>`, key, success, error))
-  }
-  <%_ } else { _%>
-  return crudActions.delItem(moduleDef, `${apiUrl}/<%- getRoute(routeDel) %><%- hasKey(routeDel) ? '' : '/${key}' %>`, key, success, error)
-  <%_ } _%>
-}
-<%_ if (hasOwner) { _%>
-function setOwner (owner) {
-  return {
-    type: actionTypes.setOwner,
-    payload: {
-      owner
-    }
-  }
-}
-<%_ } _%>
+
 export const actionCreators = {
-  <%_ if (hasOwner) { _%>
-  setOwner,
-  <%_ } _%>
   getItem,
   getList,
   addItem,
@@ -121,9 +80,6 @@ const initialState = {
   list: [],
   <%_ if (pagination) { _%>
   total: 0,
-  <%_ } _%>
-  <%_ if (hasOwner) { _%>
-  owner: '',
   <%_ } _%>
   editMode: 'new',
   editTarget: null,
