@@ -40,12 +40,11 @@ module.exports = generators.Base.extend({
   },
   writing () {
     var dist = this.destinationPath(path.join(
-      this.blueprint.dist, this.blueprint.modelName + '.js'
+      this.blueprint.dist, this.blueprint.moduleName + '.js'
     ))
-
     this.fs.copyTpl(
       this.templatePath('index.js'),
-      this.blueprint.dist + this.blueprint.moduleName + '.js',
+      dist,
       this.blueprint
     )
   }
