@@ -50,7 +50,7 @@ module.exports = {
     dist: 'src/redux/module'
   },
   view: {
-    name: 'View',
+    name: '<%- modelClassifyName %>View',
     dist: 'src/views'
   }
 }

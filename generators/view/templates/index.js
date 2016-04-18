@@ -1,27 +1,27 @@
 import React, {PropTypes} from 'react'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {actionCreators} from 'redux/modules/<%- crud.moduleName %>'
+import {actionCreators} from 'redux/modules/<%- crud.name %>'
 <%_ if (table) { _%>
-import <%- table.tableName %> from 'components/<%- table.tableName %>'
+import <%- table.name %> from 'components/<%- table.name %>'
 <%_ } _%>
 <%_ if (form) { _%>
-import <%- form.formName %> from 'components/<%- form.formName %>'
+import <%- form.name %> from 'components/<%- form.name %>'
 import {Button, message, Modal} from 'antd'
 <%_ } _%>
 
-const <%- viewName %> = React.createClass({
+const <%- view.name %> = React.createClass({
   propTypes: {
     actions: PropTypes.object.isRequired,
-    <%- crud.moduleName %>: PropTypes.object.isRequired
+    <%- crud.name %>: PropTypes.object.isRequired
   },
   <%_ if (table) { _%>
-    <%_ if (!table.pagination) { _%>
+    <%_ if (!pagination) { _%>
   componentWillMount () {
     this.props.actions.getList()
   },
     <%_ } _%>
-    <%_ if (table.pagination) { _%>
+    <%_ if (pagination) { _%>
   getInitialState () {
     return {
       pageSize: 10,
@@ -45,7 +45,7 @@ const <%- viewName %> = React.createClass({
       title: '确认操作',
       content: '确认要删除该条目吗？',
       onOk: () => {
-        this.props.actions.delItem(item.<%- crud.keyName %>, () => {
+        this.props.actions.delItem(item.<%- modelKey %>, () => {
           message.success('操作成功')
         }, (err) => {
           message.error('操作失败')
@@ -65,7 +65,7 @@ const <%- viewName %> = React.createClass({
     this.props.actions.startEditItem()
   },
   editOk (item) {
-    const {<%- crud.moduleName %>: {editTarget, editMode}} = this.props
+    const {<%- crud.name %>: {editTarget, editMode}} = this.props
     if (editMode === 'new') {
       this.props.actions.addItem(item, () => {
         message.success('操作成功')
@@ -75,7 +75,7 @@ const <%- viewName %> = React.createClass({
         console.error(err)
       })
     } else {
-      this.props.actions.updateItem(editTarget.<%- crud.keyName %>, item, () => {
+      this.props.actions.updateItem(editTarget.<%- modelKey %>, item, () => {
         message.success('操作成功')
         this.props.actions.endEditItem()
       }, (err) => {
@@ -89,7 +89,7 @@ const <%- viewName %> = React.createClass({
   },
   <%_ } _%>
   render () {
-    const {<%- crud.moduleName %>: {
+    const {<%- crud.name %>: {
       requesting, list, editing, editTarget, editMode
     }} = this.props
     <%_ if (form) { _%>
@@ -105,10 +105,10 @@ const <%- viewName %> = React.createClass({
     const tableProps = {
       dataSource: list,
       loading: requesting<%- table.methods.length > 0 || table.pagination ? ',' : '' %>
-      <%_ if (table.pagination) { _%>
+      <%_ if (pagination) { _%>
       pageSize: this.state.pageSize,
       currentPage: this.state.currentPage,
-      total: this.props.<%- crud.moduleName %>.total,
+      total: this.props.<%- crud.name %>.total,
       pageChangeHandler: this.pageChangeHandler<%- table.methods.length > 0 ? ',' : '' %>
       <%_ } _%>
       <%_ for (var i = 0; i < table.methods.length; i++) { _%>
@@ -122,18 +122,18 @@ const <%- viewName %> = React.createClass({
         <Button.Group style={{marginBottom: '10px'}}>
           <Button type='primary' onClick={this.addItem}>添加</Button>
         </Button.Group>
-        <<%- form.formName %> {...formProps} />
+        <<%- form.name %> {...formProps} />
         <%_ } _%>
         <%_ if (table) { _%>
-        <<%- table.tableName %> {...tableProps} />
+        <<%- table.name %> {...tableProps} />
         <%_ } _%>
       </div>
     )
   }
 })
 
-const mapStateToProps = (state) => ({<%- crud.moduleName %>: state.<%- crud.moduleName %>})
+const mapStateToProps = (state) => ({<%- crud.name %>: state.<%- crud.name %>})
 const mapActionsToProps = (dispatch) => ({
   actions: bindActionCreators(actionCreators, dispatch)
 })
-export default connect(mapStateToProps, mapActionsToProps)(<%- viewName %>)
+export default connect(mapStateToProps, mapActionsToProps)(<%- view.name %>)

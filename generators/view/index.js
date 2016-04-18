@@ -1,4 +1,5 @@
 var generators = require('yeoman-generator')
+var path = require('path')
 module.exports = generators.Base.extend({
   constructor: function () {
     generators.Base.apply(this, arguments)
@@ -13,14 +14,15 @@ module.exports = generators.Base.extend({
     this.blueprint.table = this.blueprint.table || null
     this.blueprint.form = this.blueprint.form || null
     var crud = this.blueprint.crud
-    this.blueprint.hasOwner = [crud.urlGetItem || '', crud.urlGetList || '',
-      crud.urlAdd || '', crud.urlUpdate || '', crud.urlDel || ''].join(',').indexOf('${owner}') >= 0
   },
   writing () {
+    var dist = this.destinationPath(path.join(
+      this.blueprint.view.dist, this.blueprint.view.name + '.js'
+    ))
     this.fs.copyTpl(
       this.templatePath('index.js'),
-      this.destinationPath(`src/views/${this.blueprint.viewName}/index.js`),
-      this.blueprint
+      dist,
+      Object.assign({}, this.blueprint)
     )
   }
 })
