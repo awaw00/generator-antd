@@ -45,21 +45,29 @@ const moduleDef = {
       <%_ match = re.exec(uri) _%>
     <%_ } _%>
     <%_ params = Array.from(params) _%>
-function <%- key %> (<%- params.join(', ') %><%- params.length === 0 ? '' : ', ' %>success, error) {
+function <%- key %> (<%- params.join(', ') %><%- params.length === 0 ? '' : ', ' %><%- key === 'addItem' || key === 'updateItem' ? 'item, ' : '' %>success, error) {
   <%_ var requestUri = [baseUri, operations[key]].join('/').replace(/^\//, '').replace(/\/$/, '') _%>
   <%_ if (key === 'getList' && pagination) { _%>
   return crudActions.<%- key %><%- pagination ? 'OfPage' : '' %>(moduleDef, `${apiUrl}/<%- requestUri %>`, success, error)
   <%_ } else { _%>
+    <%_ if (key === 'addItem') { _%>
+  return crudActions.<%- key %>(moduleDef, `${apiUrl}/<%- requestUri %>`, item, success, error)
+    <%_ } else if (key === 'updateItem') { _%>
+  return crudActions.<%- key %>(moduleDef, `${apiUrl}/<%- requestUri %>`, key, item, success, error)
+    <%_ } else if (key === 'delItem') { _%>
+  return crudActions.<%- key %>(moduleDef, `${apiUrl}/<%- requestUri %>`, key, success, error)
+    <%_ } else { _%>
   return crudActions.<%- key %>(moduleDef, `${apiUrl}/<%- requestUri %>`, success, error)
+    <%_ } _%>
   <%_ } _%>
 }
   <%_ } _%>
 <%_ } _%>
 function startEditItem (item) {
-  return crudActions.startEditItem(moduleDef, item)
+  return crudActions.startEditItem(moduleDef.types, item)
 }
 function endEditItem () {
-  return crudActions.endEditItem(moduleDef)
+  return crudActions.endEditItem(moduleDef.types)
 }
 
 export const actionCreators = {

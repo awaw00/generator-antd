@@ -13,11 +13,10 @@ module.exports = generators.Base.extend({
     this.blueprint = require(blueprintFilePath)
     this.blueprint.table = this.blueprint.table || null
     this.blueprint.form = this.blueprint.form || null
-    var crud = this.blueprint.crud
   },
   writing () {
     var dist = this.destinationPath(path.join(
-      this.blueprint.view.dist, this.blueprint.view.name + '.js'
+      this.blueprint.view.dist, this.blueprint.view.name, '/index.js'
     ))
     this.fs.copyTpl(
       this.templatePath('index.js'),

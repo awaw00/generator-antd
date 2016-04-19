@@ -78,8 +78,8 @@ const <%- blueprint.form.name %> = React.createClass({
     const {visible, cancelHandler, editMode, confirmLoading} = this.props
     const title = editMode === 'new' ? '<%- blueprint.form.newTitle %>' : '<%- blueprint.form.editTitle %>'
     const formLayout = {
-      labelCol: {span: <%- blueprint.form.layout.labelCol ? blueprint.form.layout.labelCol : 4 %>},
-      wrapperCol: {span: <%- blueprint.form.layout.wrapperCol ? blueprint.form.layout.wrapperCol : 16 %>}
+      labelCol: {span: <%- blueprint.form.layout.labelCol ? blueprint.form.layout.labelCol : 6 %>},
+      wrapperCol: {span: <%- blueprint.form.layout.wrapperCol ? blueprint.form.layout.wrapperCol : 14 %>}
     }
     const modalProps = {
       title,

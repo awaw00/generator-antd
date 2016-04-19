@@ -22,8 +22,8 @@ module.exports = {
     newTitle: 'Add <%- modelTitleizeName %>',
     editTitle: 'Edit <%- modelTitleizeName %>',
     layout: {
-      labelCol: 4,
-      wrapperCol: 16
+      labelCol: 6,
+      wrapperCol: 14
     },
     dist: 'src/components'
   },
@@ -41,13 +41,13 @@ module.exports = {
     name: '<%- modelName %>',
     baseUri: '<%- modelName %>',
     operations: {
-      getItem: 'item',
+      getItem: '${key}',
       getList: '',
-      addItem: '${key}',
+      addItem: '',
       updateItem: '${key}',
       delItem: '${key}'
     },
-    dist: 'src/redux/module'
+    dist: 'src/redux/modules'
   },
   view: {
     name: '<%- modelClassifyName %>View',

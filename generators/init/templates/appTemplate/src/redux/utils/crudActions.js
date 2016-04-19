@@ -31,8 +31,8 @@ export function getList (module, url, success, error) {
     dispatch(startFetchList(module.types))
     return requester.get(url)
           .then((res) => {
-            dispatch(endFetchList(module.types, res.Data))
-            if (success) success(res.Data)
+            dispatch(endFetchList(module.types, res.data))
+            if (success) success(res.data)
           })
           .catch((err) => {
             dispatch(requestFailure(module.types, err))
@@ -64,8 +64,8 @@ export function getListOfPage (module, url, success, error) {
     dispatch(startFetchListOfPage(module.types))
     return requester.get(url)
           .then((res) => {
-            dispatch(endFetchListOfPage(module.types, res.Data, res.Total))
-            if (success) success(res.Data, res.Total)
+            dispatch(endFetchListOfPage(module.types, res.data, res.total))
+            if (success) success(res.data, res.total)
           })
           .catch((err) => {
             dispatch(requestFailure(module.types, err))
@@ -96,7 +96,7 @@ export function getItem (module, url, success, error) {
     return requester.get(url)
           .then((res) => {
             dispatch(endFetchItem(module.types))
-            if (success) success(res.Data)
+            if (success) success(res.data)
           })
           .catch((err) => {
             dispatch(requestFailure(module.types, err))
@@ -104,11 +104,11 @@ export function getItem (module, url, success, error) {
           })
   }
 }
-export function startEditItem (module, item) {
+export function startEditItem (actionTypes, item) {
   if (!item) item = null
   const editMode = item ? 'edit' : 'new'
   return {
-    type: module.types.startEditItem,
+    type: actionTypes.startEditItem,
     payload: {
       editing: true,
       editTarget: item,
@@ -117,9 +117,9 @@ export function startEditItem (module, item) {
     }
   }
 }
-export function endEditItem (module) {
+export function endEditItem (actionTypes) {
   return {
-    type: module.types.endEditItem,
+    type: actionTypes.endEditItem,
     payload: {
       editing: false,
       editTarget: null
@@ -150,9 +150,9 @@ export function addItem (module, url, item, success, error) {
     return requester.post(url, item)
           .then((res) => {
             const {list} = getState()[module.name]
-            dispatch(endAddItem(module.types, [res.Data, ...list]))
-            dispatch(endEditItem(module))
-            if (success) success(res.Data)
+            dispatch(endAddItem(module.types, [res.data, ...list]))
+            dispatch(endEditItem(module.types))
+            if (success) success(res.data)
           })
           .catch((err) => {
             dispatch(requestFailure(module.types, err))
@@ -186,13 +186,13 @@ export function updateItem (module, url, key, item, success, error) {
             const {list} = getState()[module.name]
             dispatch(endUpdateItem(module.types, list.map((i) => {
               if (i[module.itemKey] === key) {
-                return res.Data
+                return res.data
               } else {
                 return i
               }
             })))
-            dispatch(endEditItem(module))
-            if (success) success(res.Data)
+            dispatch(endEditItem(module.types))
+            if (success) success(res.data)
           })
           .catch((err) => {
             dispatch(requestFailure(module.types, err))
@@ -226,7 +226,7 @@ export function delItem (module, url, key, success, error) {
             const {list} = getState()[module.name]
             dispatch(endDelItem(module.types,
               list.filter((i) => i[module.itemKey] !== key)))
-            if (success) success(res.Data)
+            if (success) success(res.data)
           })
           .catch((err) => {
             dispatch(requestFailure(module.types, err))
