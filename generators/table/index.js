@@ -29,7 +29,6 @@ module.exports = generators.Base.extend({
       })),
       dist: blueprint.table.dist
     }
-    this.log(this.tableBlueprint.cols)
   },
   writing () {
     var dist = this.destinationPath(path.join(this.tableBlueprint.dist, this.tableBlueprint.tableName, 'index.js'))
